@@ -2,6 +2,7 @@ package classes;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class League {
 	
@@ -25,8 +26,7 @@ public class League {
 		return matches;
 	}
 	
-	public ArrayList<Match> generateCalendar() {
-		ArrayList<Match> toReturn = new ArrayList<Match>();
+	public void generateCalendar() {
 		int nTeams = teams.size();
 		
 		//In case the number of teams is odd
@@ -38,7 +38,7 @@ public class League {
 		//Shuffle teams randomly, including the bye if needed
 		Collections.shuffle(teams);
 		
-		int fixtures = nTeams - 1;
+		int fixtures = (nTeams - 1) * 2;
 		int matchesPerFixture = nTeams / 2;
 		
 		for (int round = 0; round < fixtures; round++) {
@@ -50,17 +50,34 @@ public class League {
 					awayIndex = nTeams - 1;
 				}
 				
-				Team home = teams.get(homeIndex);
-				Team away = teams.get(awayIndex);
+				Team home;
+				Team away;
+				if (round % 2 == 0)
+				{
+					home = teams.get(homeIndex);
+					away = teams.get(awayIndex);
+				}
+				else
+				{
+					home = teams.get(awayIndex);
+					away = teams.get(homeIndex);
+				}
 				
 				if (!home.getName().equals("Bye") && !away.getName().equals("Bye")) {
-					toReturn.add(new Match(home, away));
+					Match newMatch = new Match(home, away);
+					newMatch.setFixture((byte) (round + 1));
+					matches.add(newMatch);
 				}
 			}
 		}
-		//I think this is actually a single round-robin not double
-		//TODO check and fix is needed; should be just duplicate the loop
-		return toReturn;
+	}
+	
+	public void simulateLeague() {
+		for (int i = 0; i < matches.size(); i++) {
+			matches.get(i).simulateHomeAway();
+		}
+		Collections.sort(teams, Comparator.comparing(Team::getPoints));
+		Collections.reverse(teams);
 	}
 
 }

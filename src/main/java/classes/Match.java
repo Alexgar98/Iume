@@ -134,6 +134,28 @@ public class Match {
 		else {
 			gAway += (byte) (4 + bonusAway);
 		}
+		
+		//Update both teams' stats
+		if (gHome > gAway) { //Home wins
+			home.setWins((byte) (home.getWins() + 1));
+			home.setPoints((short) (home.getPoints() + 2)); //Adding two points per victory for personal purposes. Change it if needed
+			away.setLosses((byte) (away.getLosses() + 1));
+		}
+		else if (gHome < gAway) { //Away wins
+			away.setWins((byte) (away.getWins() + 1));
+			away.setPoints((short) (away.getPoints() + 2)); //Adding two points per victory for personal purposes. Change it if needed
+			home.setLosses((byte) (home.getLosses() + 1));
+		}
+		else { //Draw
+			home.setDraws((byte) (home.getDraws() + 1));
+			home.setPoints((short) (home.getPoints() + 1));
+			away.setDraws((byte) (away.getDraws() + 1));
+			away.setPoints((short) (away.getPoints() + 1));
+		}
+		home.setgFor((short) (home.getgFor() + gHome));
+		home.setgAgainst((short) (home.getgAgainst() + gAway));
+		away.setgFor((short) (away.getgFor() + gAway));
+		away.setgAgainst((short) (away.getgAgainst() + gHome));
 	}
 	
 	public void simulateNeutralField() {
